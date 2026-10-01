@@ -1,13 +1,12 @@
 {
-  "name": "Orbit — Expense Tracker",
-  "short_name": "Orbit",
-  "description": "Private, offline-first expense tracking with budgets and insights.",
+  "name": "Yaje — Expense Tracker",
+  "short_name": "Yaje",
+  "description": "Private, offline-first expense tracking with budgets and insights, in English and French.",
   "id": "./",
   "start_url": "./#/home",
   "scope": "./",
   "display": "standalone",
-  "display_override": ["window-controls-overlay", "standalone"],
-  "orientation": "any",
+  "orientation": "portrait-primary",
   "background_color": "#06070D",
   "theme_color": "#06070D",
   "categories": ["finance", "productivity"],
@@ -18,7 +17,7 @@
     { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
   ],
   "shortcuts": [
-    { "name": "Add transaction", "short_name": "Add", "url": "./?action=add#/home", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
-    { "name": "Insights", "url": "./#/insights", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+    { "name": "Add transaction / Ajouter une transaction", "short_name": "Add / Ajouter", "url": "./?action=add#/home", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Insights / Analyses", "url": "./#/insights", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
   ]
 }

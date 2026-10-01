@@ -3,14 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Orbit — Expense Tracker</title>
-  <meta name="description" content="Orbit is a fast, private, offline-first expense tracker. Track spending, set budgets and see insights — all on your device.">
+  <title>Yaje — Expense Tracker</title>
+  <meta name="description" content="Yaje — a fast, private, offline-first expense tracker in English and French. Track spending, set budgets and see insights, all on your device. / Suivez vos dépenses, budgets et analyses, en toute confidentialité.">
   <meta name="theme-color" content="#06070D">
   <meta name="color-scheme" content="dark light">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Orbit">
+  <meta name="apple-mobile-web-app-title" content="Yaje">
+  <meta name="application-name" content="Yaje">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
@@ -22,44 +23,46 @@
   <script>
     // Apply theme before first paint to avoid a flash
     try {
-      var s = JSON.parse(localStorage.getItem('orbit.v1') || '{}').settings || {};
+      var s = JSON.parse(localStorage.getItem('yaje.v1') || localStorage.getItem('orbit.v1') || '{}').settings || {};
       var t = s.theme === 'light' || s.theme === 'dark' ? s.theme : (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
       document.documentElement.dataset.theme = t;
+      var l = s.lang || ((navigator.language || 'en').slice(0, 2) === 'fr' ? 'fr' : 'en');
+      document.documentElement.lang = l;
     } catch (e) {}
   </script>
 </head>
 <body>
-  <a class="skip-link" href="#view">Skip to content</a>
+  <a class="skip-link" href="#view" data-i18n="skip">Skip to content</a>
   <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
 
   <div class="shell">
     <nav class="nav" aria-label="Main">
       <div class="brand" aria-hidden="true">
         <img src="icons/icon.svg" alt="" width="32" height="32">
-        <span>Orbit</span>
+        <span>Yaje</span>
       </div>
-      <a class="nav-item" href="#/home" data-route="home" aria-label="Home"><svg class="i"><use href="#i-home"/></svg><span>Home</span></a>
-      <a class="nav-item" href="#/activity" data-route="activity" aria-label="Activity"><svg class="i"><use href="#i-list"/></svg><span>Activity</span></a>
-      <button class="fab" type="button" data-action="add" aria-label="Add transaction" title="Add transaction (N)">
-        <svg class="i"><use href="#i-plus"/></svg><span class="fab-label">New transaction</span>
+      <a class="nav-item" href="#/home" data-route="home" data-i18n-aria="nav.home"><svg class="i"><use href="#i-home"/></svg><span data-i18n="nav.home">Home</span></a>
+      <a class="nav-item" href="#/activity" data-route="activity" data-i18n-aria="route.activity"><svg class="i"><use href="#i-list"/></svg><span data-i18n="route.activity">Activity</span></a>
+      <button class="fab" type="button" data-action="add" data-i18n-aria="act.addTx" data-i18n-title="act.addTxKey">
+        <svg class="i"><use href="#i-plus"/></svg><span class="fab-label" data-i18n="act.newTx">New transaction</span>
       </button>
-      <a class="nav-item" href="#/insights" data-route="insights" aria-label="Insights"><svg class="i"><use href="#i-chart"/></svg><span>Insights</span></a>
-      <a class="nav-item" href="#/budgets" data-route="budgets" aria-label="Budgets"><svg class="i"><use href="#i-target"/></svg><span>Budgets</span></a>
-      <a class="nav-item nav-settings" href="#/settings" data-route="settings" aria-label="Settings"><svg class="i"><use href="#i-settings"/></svg><span>Settings</span></a>
+      <a class="nav-item" href="#/insights" data-route="insights" data-i18n-aria="route.insights"><svg class="i"><use href="#i-chart"/></svg><span data-i18n="route.insights">Insights</span></a>
+      <a class="nav-item" href="#/budgets" data-route="budgets" data-i18n-aria="route.budgets"><svg class="i"><use href="#i-target"/></svg><span data-i18n="route.budgets">Budgets</span></a>
+      <a class="nav-item nav-settings" href="#/settings" data-route="settings" data-i18n-aria="route.settings"><svg class="i"><use href="#i-settings"/></svg><span data-i18n="route.settings">Settings</span></a>
     </nav>
 
     <div class="main">
       <header class="topbar">
         <div class="topbar-title">
           <p class="eyebrow" id="eyebrow"></p>
-          <h1 id="title">Orbit</h1>
+          <h1 id="title">Yaje</h1>
         </div>
         <div class="month-switch" id="monthSwitch">
-          <button class="icon-btn" type="button" data-action="month-prev" aria-label="Previous month"><svg class="i"><use href="#i-left"/></svg></button>
-          <button class="month-label" type="button" data-action="month-today" id="monthLabel" title="Jump to current month"></button>
-          <button class="icon-btn" type="button" data-action="month-next" aria-label="Next month"><svg class="i"><use href="#i-right"/></svg></button>
+          <button class="icon-btn" type="button" data-action="month-prev" data-i18n-aria="month.prev"><svg class="i"><use href="#i-left"/></svg></button>
+          <button class="month-label" type="button" data-action="month-today" id="monthLabel" ></button>
+          <button class="icon-btn" type="button" data-action="month-next" data-i18n-aria="month.next"><svg class="i"><use href="#i-right"/></svg></button>
         </div>
-        <a class="icon-btn topbar-settings" href="#/settings" aria-label="Settings"><svg class="i"><use href="#i-settings"/></svg></a>
+        <a class="icon-btn topbar-settings" href="#/settings" data-i18n-aria="route.settings"><svg class="i"><use href="#i-settings"/></svg></a>
       </header>
       <main id="view" tabindex="-1"></main>
     </div>
@@ -97,6 +100,8 @@
     <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17h.01"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></symbol>
     <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></symbol>
+    <symbol id="i-share" viewBox="0 0 24 24"><path d="M12 15V3m0 0L8 7m4-4 4 4"/><path d="M8 11H6a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-2"/></symbol>
     <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13 7 4 4"/></symbol>
     <!-- Category icons -->
     <symbol id="c-food" viewBox="0 0 24 24"><path d="M6 3v7a3 3 0 0 0 6 0V3M9 3v18"/><path d="M18 21V3c-2 1-3.5 4-3.5 8H18"/></symbol>
@@ -123,6 +128,7 @@
     <symbol id="c-shirt" viewBox="0 0 24 24"><path d="M8 3 3 6l2 4 2-1v12h10V9l2 1 2-4-5-3a4 4 0 0 1-8 0z"/></symbol>
   </svg>
 
+  <script src="i18n.js" defer></script>
   <script src="app.js" defer></script>
 </body>
 </html>

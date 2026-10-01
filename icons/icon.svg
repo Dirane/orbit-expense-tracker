@@ -4,7 +4,7 @@
     <radialGradient id="bg" cx=".3" cy=".2" r="1"><stop offset="0" stop-color="#1A1F3A"/><stop offset="1" stop-color="#06070D"/></radialGradient>
   </defs>
   <rect width="512" height="512" rx="116" fill="url(#bg)"/>
-  <ellipse cx="256" cy="256" rx="178" ry="88" fill="none" stroke="url(#g)" stroke-width="22" transform="rotate(-28 256 256)" opacity=".9"/>
-  <circle cx="256" cy="256" r="74" fill="url(#g)"/>
-  <circle cx="404" cy="168" r="26" fill="#5EEAD4"/>
+  <circle cx="256" cy="256" r="168" fill="none" stroke="url(#g)" stroke-width="10" opacity=".28"/>
+  <path d="M168 150 256 262 344 150M256 262v108" fill="none" stroke="url(#g)" stroke-width="58" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="137" cy="375" r="24" fill="#5EEAD4"/>
 </svg>

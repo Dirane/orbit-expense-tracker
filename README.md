@@ -1,41 +1,32 @@
-# Orbit — Expense Tracker (PWA)
+# Yaje — Expense Tracker (PWA) · Suivi des dépenses
 
-A private, offline-first expense tracker. No account, no backend, no dependencies — data lives in the browser's localStorage on the device.
+A private, offline-first, **bilingual (English / Français)** expense tracker. No account, no backend, no dependencies — data lives on the device.
 
-## Run
+**Live:** https://dirane.github.io/yaje-expense-tracker/
 
-Any static server works (service workers need `http://localhost` or HTTPS):
+## Highlights
+- **Bilingual EN/FR** — auto-detects the device language, switchable anytime (welcome screen or Settings). Dates, numbers and currencies follow local conventions (e.g. `1 750,00 €`, `2 500 FCFA`); French plural rules are respected. Built-in category names translate; categories you rename keep your name.
+- **Add to home screen** — on first visit Yaje invites you to install it (*OK, add it* / *Continue in browser*). Android/Chrome/Edge open the native install prompt; iPhone/iPad show the Share → *Add to Home Screen* steps (iOS has no install API). Once installed, a **"Yaje has been added to your home screen"** confirmation appears (*OK* / *Continue*). Browsers never allow a site to install itself without the user's confirmation.
+- **Fast entry** — quick-add chips for your most-used categories, amount field that does math (`1500+250`), Today/Yesterday chips, note suggestions from history, a save button that shows the total, and a plain-language repeat preview ("Repeats on day 15 of every month · next on …").
+- **Budgets & recurring** — monthly budget with per-day allowance, category limits, alerts at 80%/over, weekly/monthly/yearly repeats (month-end and leap-year safe).
+- **Insights** — vs last month, month-end projection, savings rate, category donut, daily bars, 6-month trend.
+- **Currency switching with conversion** — fetches today's rate (open.er-api.com; only currency codes are sent), editable, works offline from the last saved rate; *Label only* and *Undo* available. Cameroon and other CFA-zone devices default to XAF/XOF.
+- **Data** — CSV export (Excel-safe), JSON backup/restore, demo data, erase all. Data from the earlier "Orbit" version migrates automatically.
 
+## Run locally
 ```sh
-cd expense-tracker
-python3 -m http.server 8787
-# open http://localhost:8787
+python3 -m http.server 8787   # then open http://localhost:8787
 ```
-
-Deploy by uploading the folder to any static host (Netlify, Vercel, GitHub Pages, S3…). It works from a sub-path.
-
-## Features
-
-- **Fast entry** — bottom-sheet form, category grid, Today/Yesterday chips, and an amount field that does math (`12.50+8`, `3*4.99`).
-- **Recurring** — weekly/monthly/yearly rules auto-log on launch (backfills past dates, clamps the 31st to month-end, handles leap years). Pause/resume never backfills the paused gap.
-- **Budgets** — monthly total with a daily allowance, per-category limits, and 80%/over alerts on the home screen.
-- **Insights** — like-for-like comparison vs last month, month-end projection, savings rate, category donut + ranking, daily bars (tap for detail), 6-month trend, and largest expenses.
-- **Activity** — multi-term search (notes, categories, amounts, dates), type/category filters, month or all-time view, grouped by day.
-- **Currency switching with conversion** — changing currency fetches today's market rate (open.er-api.com, free/no key; only the two currency codes are sent), lets you adjust it, and converts every transaction, budget and recurring rule with rounding to the new currency's precision. Works offline using the last saved rate (cross-rates supported) or a manually entered one; "Label only" and Undo are available.
-- **Landing page** — hero with budget progress plus Income / Net / per-day-left stats (auto-compacts on narrow phones), one-tap quick-add chips for your most-used categories, a condensed "Heads up" budget card, recent activity, 7-day trend and top categories. First launch shows a welcome screen with feature highlights.
-- **Data** — CSV export (Excel-safe, formula-injection guarded), full JSON backup/restore with validation, demo data, erase all.
-- **Custom categories** — name, icon, color; deleting one moves its transactions to "Other".
-- **PWA** — installable, works fully offline (fonts included after first load), app shortcut "Add transaction", update prompt when a new version ships, keeps multiple tabs in sync.
-- **Design** — dark/light/system themes, responsive (bottom bar on phones, sidebar on desktop), safe-area aware, reduced-motion support, keyboard shortcuts (`N` new, `/` search).
+Service workers need `localhost` or HTTPS. Bump `VERSION` in `sw.js` on each release so installed copies show the update prompt.
 
 ## Files
-
 | File | Purpose |
 |---|---|
-| `index.html` | App shell, icon sprite |
-| `styles.css` | Design tokens + components |
-| `app.js` | All app logic (store, views, recurring engine, import/export) |
-| `sw.js` | Service worker — bump `VERSION` on each release to prompt an update |
-| `manifest.webmanifest`, `icons/` | Install metadata and icons |
+| `index.html` | App shell & icon sprite |
+| `i18n.js` | All UI text, English + French |
+| `app.js` | App logic (store, views, recurring engine, install flow, conversion) |
+| `styles.css` | Design tokens & components |
+| `sw.js` | Offline cache |
+| `manifest.webmanifest`, `icons/` | Install metadata & icons |
 
-Amounts are stored as integer cents to avoid floating-point drift; dates are local `YYYY-MM-DD` strings (never UTC) so transactions don't shift days across time zones.
+Amounts are stored as integer cents; dates are local `YYYY-MM-DD` strings so nothing shifts across time zones.

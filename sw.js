@@ -1,9 +1,10 @@
-/* Orbit service worker — offline-first app shell. Bump VERSION on every release. */
-const VERSION = 'orbit-v1.1.0';
+/* Yaje service worker — offline-first app shell. Bump VERSION on every release. */
+const VERSION = 'yaje-v2.0.0';
 const SHELL = [
   './',
   './index.html',
   './styles.css',
+  './i18n.js',
   './app.js',
   './manifest.webmanifest',
   './icons/icon.svg',
@@ -12,7 +13,7 @@ const SHELL = [
   './icons/maskable-512.png',
   './icons/apple-touch-icon.png',
 ];
-const FONT_CACHE = 'orbit-fonts';
+const FONT_CACHE = 'yaje-fonts';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(VERSION).then((c) => c.addAll(SHELL)));
