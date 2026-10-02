@@ -2,7 +2,7 @@
 (() => {
   'use strict';
 
-  const APP_VERSION = '2.2.0';
+  const APP_VERSION = '2.2.1';
   const STORE_KEY = 'yaje.v1';
   const LEGACY_KEYS = ['orbit.v1']; // data from before the rename is migrated on first load
   const RATES_KEY = 'yaje.rates';
@@ -475,6 +475,7 @@
     void view.offsetWidth; // restart entrance animation
     view.style.animation = '';
     afterRender[ui.route]?.();
+    fitNumbers();
   }
 
   const afterRender = {
@@ -482,16 +483,32 @@
     home() { fitHeroStats(); },
   };
 
+  /** Big figures (e.g. 7-digit FCFA amounts) shrink to fit their box instead of wrapping mid-number. */
+  function fitNumbers() {
+    for (const el of $$('.hero-amount, .stat-value')) {
+      el.style.fontSize = '';
+      const w = el.clientWidth;
+      if (!w || el.scrollWidth <= w) continue;
+      const base = parseFloat(getComputedStyle(el).fontSize);
+      el.style.fontSize = `${Math.max(12, Math.floor(base * (w / el.scrollWidth) * 0.98))}px`;
+    }
+  }
+
   /** Show full figures when they fit; fall back to compact notation (e.g. $4.2K) when they'd be clipped. */
   function fitHeroStats() {
     for (const el of $$('.hero-stats .v[data-full]')) {
       el.textContent = el.dataset.full;
+      el.style.fontSize = '';
       if (el.scrollWidth > el.clientWidth + 1) el.textContent = el.dataset.compact;
+      if (el.scrollWidth > el.clientWidth + 1) { // still too wide (e.g. "+931,7 k FCFA"): shrink a little
+        const base = parseFloat(getComputedStyle(el).fontSize);
+        el.style.fontSize = `${Math.max(9, Math.floor(base * (el.clientWidth / el.scrollWidth) * 0.95))}px`;
+      }
     }
   }
-  document.fonts?.ready.then(() => { if (ui.route === 'home') fitHeroStats(); }); // re-measure once web fonts swap in
+  document.fonts?.ready.then(() => { fitNumbers(); if (ui.route === 'home') fitHeroStats(); }); // re-measure once web fonts swap in
   let fitTimer;
-  window.addEventListener('resize', () => { clearTimeout(fitTimer); fitTimer = setTimeout(() => { if (ui.route === 'home') fitHeroStats(); }, 120); });
+  window.addEventListener('resize', () => { clearTimeout(fitTimer); fitTimer = setTimeout(() => { fitNumbers(); if (ui.route === 'home') fitHeroStats(); }, 120); });
 
   function setLang(next) {
     if (!['en', 'fr'].includes(next) || next === lang) return;

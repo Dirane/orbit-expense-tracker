@@ -287,7 +287,7 @@ window.YAJE_I18N = {
 
     'bud.used': 'utilisé', 'bud.monthly': 'Budget mensuel', 'bud.leftSpent': '{l} restants · {s} dépensés', 'bud.overSpent': '{o} de dépassement · {s} dépensés',
     'bud.setTitle': 'Fixez un budget mensuel', 'bud.setBody': 'Donnez-vous une limite de dépenses et Yaje vous montrera combien vous pouvez dépenser chaque jour.', 'bud.setBtn': 'Fixer le budget',
-    'bud.over': 'Dépassé', 'bud.onTrack': 'Dans les clous', 'bud.setLimit': 'Fixer', 'bud.editLimitFor': 'Modifier la limite pour {c}', 'bud.setLimitFor': 'Fixer une limite pour {c}',
+    'bud.over': 'Dépassé', 'bud.onTrack': 'Maîtrisé', 'bud.setLimit': 'Fixer', 'bud.editLimitFor': 'Modifier la limite pour {c}', 'bud.setLimitFor': 'Fixer une limite pour {c}',
     'bud.of': '{s} sur {l}', 'bud.left': '{a} restants', 'bud.noLimit': '{a} dépensés · sans limite', 'bud.noSpend': 'Aucune dépense',
     'bud.recurring': 'Récurrents', 'bud.next': 'prochain : {d}', 'bud.paused': 'En pause', 'bud.pause': 'Mettre en pause', 'bud.resume': 'Reprendre',
     'bud.pauseX': 'Mettre en pause {x}', 'bud.resumeX': 'Reprendre {x}', 'bud.deleteX': 'Supprimer la règle récurrente {x}',
