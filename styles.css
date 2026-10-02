@@ -720,3 +720,29 @@ dialog::backdrop { background: var(--scrim); backdrop-filter: blur(6px); -webkit
 .hero-stats > div { min-width: 0; }
 .hero-stats .k { overflow: hidden; text-overflow: ellipsis; }
 @media (max-width: 420px) { .hero-stats .k .dot-ic { display: none; } }
+
+/* ---------- Demo mode ---------- */
+.demo-banner {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 14px; padding: 12px 12px 12px 14px;
+  border-radius: var(--r); border: 1px solid color-mix(in srgb, var(--accent-2) 40%, var(--border));
+  background: var(--grad-soft), var(--surface); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+}
+.demo-banner .txt { flex: 1; min-width: 0; }
+.demo-banner .txt b { display: block; font-size: 14px; font-weight: 700; }
+.demo-banner .txt span { display: block; font-size: 13px; color: var(--text-2); line-height: 1.35; }
+.demo-banner .btn { flex: none; }
+@media (max-width: 420px) {
+  .demo-banner { flex-wrap: wrap; }
+  .demo-banner .txt { flex-basis: calc(100% - 60px); }
+  .demo-banner .btn { width: 100%; }
+}
+@media (min-width: 960px) { .demo-banner { margin-bottom: 18px; } }
+.check-row { display: flex; align-items: center; gap: 12px; margin-top: 16px; padding: 12px 14px; border-radius: 14px; background: var(--surface-2); cursor: pointer; font-size: 15px; font-weight: 500; }
+.check-row input { width: 20px; height: 20px; accent-color: var(--accent); flex: none; margin: 0; }
+/* Narrow phones: compact top bar so the page title stays readable */
+@media (max-width: 380px) {
+  .topbar { gap: 8px; }
+  .topbar h1 { font-size: 22px; }
+  .month-label { min-width: 0; padding: 0 2px; font-size: 13px; }
+  .month-switch .icon-btn { width: 32px; }
+}

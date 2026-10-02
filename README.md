@@ -11,6 +11,7 @@ A private, offline-first, **bilingual (English / Français)** expense tracker. N
 - **Budgets & recurring** — monthly budget with per-day allowance, category limits, alerts at 80%/over, weekly/monthly/yearly repeats (month-end and leap-year safe).
 - **Insights** — vs last month, month-end projection, savings rate, category donut, daily bars, 6-month trend.
 - **Currency switching with conversion** — fetches today's rate (open.er-api.com; only currency codes are sent), editable, works offline from the last saved rate; *Label only* and *Undo* available. Cameroon and other CFA-zone devices default to XAF/XOF.
+- **Safe demo mode** — *Explore with demo data* parks your own data and shows a banner on every screen. *Start my own* removes the sample data and brings your data back (or gives a clean start), optionally keeping anything you added while exploring. Reloads stay in the demo; restoring a backup always comes back as real data.
 - **Data** — CSV export (Excel-safe), JSON backup/restore, demo data, erase all. Data from the earlier "Orbit" version migrates automatically.
 
 ## Run locally

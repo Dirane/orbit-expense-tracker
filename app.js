@@ -2,11 +2,12 @@
 (() => {
   'use strict';
 
-  const APP_VERSION = '2.0.0';
+  const APP_VERSION = '2.1.0';
   const STORE_KEY = 'yaje.v1';
   const LEGACY_KEYS = ['orbit.v1']; // data from before the rename is migrated on first load
   const RATES_KEY = 'yaje.rates';
   const INSTALL_KEY = 'yaje.install';
+  const REAL_KEY = 'yaje.real'; // the user's own data, parked while the demo is open
   const MAX_CENTS = 99_999_999_999; // 999,999,999.99
   const NOTE_MAX = 140;
 
@@ -220,6 +221,11 @@
           active: r.active !== false,
         });
       }
+    }
+    if (d.demo === true) {
+      out.demo = true;
+      const ids = new Set(out.txns.map((x) => x.id));
+      out.demoMine = Array.isArray(d.demoMine) ? d.demoMine.filter((id) => typeof id === 'string' && ids.has(id)) : [];
     }
     return out;
   }
@@ -451,14 +457,18 @@
     const ms = $('#monthSwitch');
     ms.hidden = !r.month || (ui.route === 'activity' && ui.allTime) || (ui.route === 'home' && !S.txns.length);
     const ml = $('#monthLabel');
-    ml.textContent = monthName(ui.month, 'short');
+    const [my, mm] = mkParts(ui.month);
+    // Narrow phones: drop the year (unless it isn't this year) so the page title keeps its room
+    ml.textContent = innerWidth < 400
+      ? cap(dtf({ month: 'short' }).format(new Date(my, mm - 1, 1))) + (my !== new Date().getFullYear() ? ` ’${String(my).slice(2)}` : '')
+      : monthName(ui.month, 'short');
     ml.setAttribute('aria-label', ui.month === curMonth() ? t('month.current', { m: monthName(ui.month) }) : t('month.jump', { m: monthName(ui.month) }));
 
     for (const a of $$('.nav-item')) {
       if (a.dataset.route === ui.route) a.setAttribute('aria-current', 'page');
       else a.removeAttribute('aria-current');
     }
-    view.innerHTML = r.view();
+    view.innerHTML = (S.demo ? demoBanner() : '') + r.view();
     view.style.animation = 'none';
     void view.offsetWidth; // restart entrance animation
     view.style.animation = '';
@@ -517,6 +527,15 @@
 
   function emptyState({ ic = 'i-sparkle', title, body, actions = '' }) {
     return `<div class="empty"><div class="orb">${icon(ic)}</div><h3>${title}</h3><p>${body}</p>${actions ? `<div class="actions">${actions}</div>` : ''}</div>`;
+  }
+
+  function demoBanner() {
+    const mine = S.demoMine?.length || 0;
+    return `<section class="demo-banner" role="status">
+      <span class="badge badge-sm" style="--c:var(--accent-2)">${icon('i-sparkle')}</span>
+      <div class="txt"><b>${t('demoMode.title')}</b><span>${mine ? tn('demoMode.mine', mine) : t('demoMode.body')}</span></div>
+      <button class="btn btn-sm btn-primary" type="button" data-action="exit-demo">${t('demoMode.exit')}</button>
+    </section>`;
   }
 
   const progressClass = (ratio) => (ratio >= 1 ? 'over' : ratio >= 0.8 ? 'warn' : '');
@@ -984,7 +1003,8 @@
         <div class="setting"><div class="txt"><b>${t('set.csv')}</b><span>${t('set.csvB')}</span></div><button class="btn btn-sm" data-action="export-csv" ${count ? '' : 'disabled'}>${icon('i-download', 'i i-sm')}CSV</button></div>
         <div class="setting"><div class="txt"><b>${t('set.backup')}</b><span>${t('set.backupB')}</span></div><button class="btn btn-sm" data-action="export-json">${icon('i-download', 'i i-sm')}${t('set.backupBtn')}</button></div>
         <div class="setting"><div class="txt"><b>${t('set.restore')}</b><span>${t('set.restoreB')}</span></div><button class="btn btn-sm" data-action="import">${icon('i-upload', 'i i-sm')}${t('set.restoreBtn')}</button></div>
-        <div class="setting"><div class="txt"><b>${t('set.demo')}</b><span>${t('set.demoB')}</span></div><button class="btn btn-sm" data-action="demo">${t('set.demoBtn')}</button></div>
+        ${S.demo ? `<div class="setting"><div class="txt"><b>${t('demoMode.title')}</b><span>${t('demoMode.settingsB')}</span></div><button class="btn btn-sm btn-primary" data-action="exit-demo">${t('demoMode.exit')}</button></div>`
+          : `<div class="setting"><div class="txt"><b>${t('set.demo')}</b><span>${t('set.demoB')}</span></div><button class="btn btn-sm" data-action="demo">${t('set.demoBtn')}</button></div>`}
         <div class="setting"><div class="txt"><b>${t('set.erase')}</b><span>${t('set.eraseB')}</span></div><button class="btn btn-sm btn-danger" data-action="erase">${icon('i-trash', 'i i-sm')}${t('set.eraseBtn')}</button></div>
       </section>
     </div>
@@ -1378,6 +1398,7 @@
         txn.recurringId = rule.id;
       }
       S.txns.push(txn);
+      if (S.demo) S.demoMine = [...(S.demoMine || []), txn.id];
     }
     const backfilled = runRecurring();
     save();
@@ -1557,7 +1578,9 @@
     }
     const ok = await confirmBox({ title: t('imp.title'), body: t('imp.body', { a: tn('n.tx', S.txns.length), b: tn('n.tx', data.txns.length) }), ok: t('set.restoreBtn'), danger: true });
     if (!ok) return;
+    delete data.demo; delete data.demoMine; // a backup is always restored as real data
     S = data;
+    try { localStorage.removeItem(REAL_KEY); } catch { /* ignore */ }
     lang = S.settings.lang;
     fmtCache = {};
     runRecurring();
@@ -1644,19 +1667,68 @@
     return data;
   }
 
-  async function loadDemo() {
-    if (S.txns.length) {
-      const ok = await confirmBox({ title: t('demo.title'), body: tn('demo.body', S.txns.length), ok: t('set.demoBtn'), danger: true });
-      if (!ok) return;
-    }
+  /** Park the user's own data, then open the sample data set. Nothing real is ever overwritten. */
+  function loadDemo() {
+    if (S.demo) { location.hash = '#/home'; return; }
+    try { localStorage.setItem(REAL_KEY, JSON.stringify(S)); } catch { return toast(t('err.storageFull'), { error: true }); }
     S = buildDemo();
+    S.demo = true;
+    S.demoMine = [];
     runRecurring();
     save();
     ui.month = curMonth();
+    resetFilters();
     if (location.hash !== '#/home') location.hash = '#/home';
     render();
-    toast(tn('demo.loaded', S.txns.length));
+    toast(tn('demo.loaded', S.txns.length) + ' · ' + t('demo.safe'));
   }
+
+  /** Leave the demo: restore the user's own data (or a clean start), optionally keeping what they added. */
+  async function exitDemo() {
+    if (!S.demo) return;
+    const mineIds = new Set(S.demoMine || []);
+    const mine = S.txns.filter((x) => mineIds.has(x.id));
+    let real = null;
+    try { real = readJSON(REAL_KEY) ? sanitize(readJSON(REAL_KEY)) : null; } catch { real = null; }
+    const hasReal = !!real?.txns.length;
+    const res = await openModal(`<h2>${t('demoExit.title')}</h2>
+      <p>${hasReal ? tn('demoExit.bodyReal', real.txns.length) : t('demoExit.bodyFresh')}</p>
+      ${mine.length ? `<label class="check-row"><input type="checkbox" id="keepMine" checked><span>${tn('demoExit.keep', mine.length)}</span></label>` : ''}
+      <div class="actions"><button class="btn" type="button" data-close="cancel">${t('demoExit.stay')}</button>
+        <button class="btn btn-primary" type="submit" value="ok" autofocus>${t(hasReal ? 'demoExit.goReal' : 'demoExit.goFresh')}</button></div>`, {
+      onSubmit: (f) => ({ keep: !!f.querySelector('#keepMine')?.checked }),
+    });
+    if (!res) return;
+    const prefs = { lang: S.settings.lang, theme: S.settings.theme };
+    if (real) S = real;
+    else { const cur = S.settings.currency; S = defaults(); S.settings.currency = cur; }
+    Object.assign(S.settings, prefs); // language/theme chosen during the demo carry over
+    delete S.demo; delete S.demoMine;
+    if (res.keep && mine.length) {
+      const ids = new Set(S.txns.map((x) => x.id));
+      for (const x of mine) {
+        const tx = { ...x };
+        delete tx.recurringId; // demo repeat rules don't come along
+        if (!S.categories.some((c) => c.id === tx.categoryId && c.type === tx.type)) tx.categoryId = FALLBACK[tx.type];
+        if (ids.has(tx.id)) tx.id = uid();
+        S.txns.push(tx);
+      }
+    }
+    try { localStorage.removeItem(REAL_KEY); } catch { /* ignore */ }
+    lang = S.settings.lang;
+    fmtCache = {};
+    runRecurring();
+    save();
+    applyStaticText();
+    ui.month = curMonth();
+    resetFilters();
+    if (location.hash !== '#/home') location.hash = '#/home';
+    render();
+    window.scrollTo({ top: 0 });
+    toast(S.txns.length ? t('demoExit.doneReal') : t('demoExit.doneFresh'));
+  }
+
+  function resetFilters() { ui.q = ''; ui.type = 'all'; ui.cat = 'all'; ui.allTime = false; ui.selDay = null; }
 
   /* =========================================================
      Theme
@@ -1786,7 +1858,9 @@
     'export-json': exportJson,
     import: () => { const f = $('#importFile'); f.value = ''; f.click(); },
     demo: loadDemo,
+    'exit-demo': exitDemo,
     erase: async () => {
+      if (S.demo) return exitDemo();
       const ok = await confirmBox({ title: t('erase.title'), body: t('erase.body'), ok: t('erase.btn'), danger: true });
       if (!ok) return;
       const keep = { currency: S.settings.currency, theme: S.settings.theme, lang: S.settings.lang, lastCat: {}, tips: {} };
