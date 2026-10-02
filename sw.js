@@ -1,5 +1,5 @@
 /* Yaje service worker — offline-first app shell. Bump VERSION on every release. */
-const VERSION = 'yaje-v2.1.0';
+const VERSION = 'yaje-v2.2.0';
 const SHELL = [
   './',
   './index.html',

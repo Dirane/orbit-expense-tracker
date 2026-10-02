@@ -176,6 +176,22 @@ window.YAJE_I18N = {
     'install.ios1': 'Tap the {s} Share button in Safari’s toolbar', 'install.ios2': 'Scroll and choose <strong>Add to Home Screen</strong>', 'install.ios3': 'Tap <strong>Add</strong> — Yaje appears on your home screen',
     'installed.title': 'Yaje has been added to your home screen', 'installed.body': 'Open it any time from your home screen — it works offline too.',
     'installed.bodyApp': 'You’re all set. Yaje now opens full screen and works offline.', 'installed.continue': 'Continue',
+
+    // Help & feedback / branding
+    'powered.by': 'Powered by',
+    'fb.navLabel': 'Feedback', 'fb.title': 'Help & feedback', 'fb.intro': 'Have an idea, found a bug, or want Yaje tailored to you? Message the Afayi team directly.',
+    'fb.feature': 'Suggest a feature', 'fb.featureB': 'Ideas to make Yaje better',
+    'fb.issue': 'Report an issue', 'fb.issueB': 'Something not working right',
+    'fb.personal': 'Personalization', 'fb.personalB': 'Your logo, categories, a custom version',
+    'fb.question': 'Question or update', 'fb.questionB': 'Ask anything, request an update',
+    'fb.direct': 'Chat on WhatsApp', 'fb.welcomeLink': 'Questions or ideas? Chat with us on WhatsApp',
+    'fb.modalTitle': 'Send feedback', 'fb.modalBody': 'Your message opens in WhatsApp, ready to send to the Afayi team.',
+    'fb.typeLabel': 'Type of message', 'fb.msgLabel': 'Your message',
+    'fb.ph.feature': 'e.g. Add a savings goals screen…', 'fb.ph.issue': 'What happened, and what did you expect?',
+    'fb.ph.personal': 'e.g. A version for my business with our logo and categories…', 'fb.ph.question': 'Ask your question or describe the update you need…',
+    'fb.privacy': 'Only the app version, language and device type are added — never your expenses.',
+    'fb.errEmpty': 'Write a short message first', 'fb.send': 'Send on WhatsApp',
+    'fb.greeting': 'Hello Afayi team,', 'fb.opened': 'Opening WhatsApp — just tap send',
   },
 
   fr: {
@@ -336,5 +352,20 @@ window.YAJE_I18N = {
     'install.ios1': 'Touchez le bouton Partager {s} dans la barre de Safari', 'install.ios2': 'Faites défiler et choisissez <strong>Sur l’écran d’accueil</strong>', 'install.ios3': 'Touchez <strong>Ajouter</strong> — Yaje apparaît sur votre écran d’accueil',
     'installed.title': 'Yaje a été ajouté à votre écran d’accueil', 'installed.body': 'Ouvrez-le à tout moment depuis votre écran d’accueil — il fonctionne aussi hors ligne.',
     'installed.bodyApp': 'Tout est prêt. Yaje s’ouvre désormais en plein écran et fonctionne hors ligne.', 'installed.continue': 'Continuer',
+
+    'powered.by': 'Propulsé par',
+    'fb.navLabel': 'Suggestions', 'fb.title': 'Aide et suggestions', 'fb.intro': 'Une idée, un bug, ou envie d’un Yaje sur mesure ? Écrivez directement à l’équipe Afayi.',
+    'fb.feature': 'Proposer une fonction', 'fb.featureB': 'Des idées pour améliorer Yaje',
+    'fb.issue': 'Signaler un problème', 'fb.issueB': 'Quelque chose ne marche pas',
+    'fb.personal': 'Personnalisation', 'fb.personalB': 'Votre logo, vos catégories, une version sur mesure',
+    'fb.question': 'Question ou mise à jour', 'fb.questionB': 'Posez une question, demandez une mise à jour',
+    'fb.direct': 'Discuter sur WhatsApp', 'fb.welcomeLink': 'Des questions ou des idées ? Écrivez-nous sur WhatsApp',
+    'fb.modalTitle': 'Envoyer un message', 'fb.modalBody': 'Votre message s’ouvre dans WhatsApp, prêt à être envoyé à l’équipe Afayi.',
+    'fb.typeLabel': 'Type de message', 'fb.msgLabel': 'Votre message',
+    'fb.ph.feature': 'ex. Ajouter un écran d’objectifs d’épargne…', 'fb.ph.issue': 'Que s’est-il passé, et qu’attendiez-vous ?',
+    'fb.ph.personal': 'ex. Une version pour mon entreprise avec notre logo et nos catégories…', 'fb.ph.question': 'Posez votre question ou décrivez la mise à jour souhaitée…',
+    'fb.privacy': 'Seuls la version de l’app, la langue et le type d’appareil sont ajoutés — jamais vos dépenses.',
+    'fb.errEmpty': 'Écrivez d’abord un court message', 'fb.send': 'Envoyer sur WhatsApp',
+    'fb.greeting': 'Bonjour l’équipe Afayi,', 'fb.opened': 'Ouverture de WhatsApp — il ne reste qu’à envoyer',
   },
 };

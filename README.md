@@ -12,6 +12,7 @@ A private, offline-first, **bilingual (English / Français)** expense tracker. N
 - **Insights** — vs last month, month-end projection, savings rate, category donut, daily bars, 6-month trend.
 - **Currency switching with conversion** — fetches today's rate (open.er-api.com; only currency codes are sent), editable, works offline from the last saved rate; *Label only* and *Undo* available. Cameroon and other CFA-zone devices default to XAF/XOF.
 - **Safe demo mode** — *Explore with demo data* parks your own data and shows a banner on every screen. *Start my own* removes the sample data and brings your data back (or gives a clean start), optionally keeping anything you added while exploring. Reloads stay in the demo; restoring a backup always comes back as real data.
+- **Help & feedback** — Settings (and the welcome screen / desktop sidebar) let users suggest a feature, report an issue, request personalization or ask a question; the message opens in WhatsApp to the Afayi team (+237 676 038 801), with only app version, language and device type attached.
 - **Data** — CSV export (Excel-safe), JSON backup/restore, demo data, erase all. Data from the earlier "Orbit" version migrates automatically.
 
 ## Run locally
@@ -31,3 +32,6 @@ Service workers need `localhost` or HTTPS. Bump `VERSION` in `sw.js` on each rel
 | `manifest.webmanifest`, `icons/` | Install metadata & icons |
 
 Amounts are stored as integer cents; dates are local `YYYY-MM-DD` strings so nothing shifts across time zones.
+
+---
+Powered by **Afayi**

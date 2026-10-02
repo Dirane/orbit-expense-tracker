@@ -2,12 +2,14 @@
 (() => {
   'use strict';
 
-  const APP_VERSION = '2.1.0';
+  const APP_VERSION = '2.2.0';
   const STORE_KEY = 'yaje.v1';
   const LEGACY_KEYS = ['orbit.v1']; // data from before the rename is migrated on first load
   const RATES_KEY = 'yaje.rates';
   const INSTALL_KEY = 'yaje.install';
-  const REAL_KEY = 'yaje.real'; // the user's own data, parked while the demo is open
+  const REAL_KEY = 'yaje.real';
+  const SUPPORT_WHATSAPP = '237676038801'; // Afayi support (Cameroon +237 676 038 801)
+  const SUPPORT_DISPLAY = '+237 6 76 03 88 01'; // the user's own data, parked while the demo is open
   const MAX_CENTS = 99_999_999_999; // 999,999,999.99
   const NOTE_MAX = 140;
 
@@ -567,6 +569,10 @@
         </div>
       </section>
       <div class="feature-grid">${feats.map(([ic, k]) => `<section class="card feature"><span class="badge badge-sm" style="--c:var(--accent)">${icon(ic)}</span><div><h3>${t(k + '.t')}</h3><p>${t(k + '.b')}</p></div></section>`).join('')}</div>
+      <div class="welcome-foot">
+        <button class="link" type="button" data-action="feedback">${icon('i-chat', 'i i-sm')}${t('fb.welcomeLink')}</button>
+        <p class="powered">${t('powered.by')} <strong>Afayi</strong></p>
+      </div>
     </div>`;
   }
 
@@ -1009,12 +1015,20 @@
       </section>
     </div>
     <div class="stack">
+      <section class="card feedback-card">
+        <div class="card-head"><h2>${t('fb.title')}</h2><span class="faint small">WhatsApp</span></div>
+        <p class="muted small" style="margin:-6px 2px 14px">${t('fb.intro')}</p>
+        <div class="fb-grid">${FEEDBACK_TYPES.map((f) => `<button class="fb-tile" type="button" data-action="feedback" data-kind="${f.id}" style="--c:${f.color}">
+          <span class="badge badge-sm">${icon(f.icon)}</span><span class="fb-txt"><b>${t('fb.' + f.id)}</b><span>${t('fb.' + f.id + 'B')}</span></span></button>`).join('')}</div>
+        <a class="wa-line" href="https://wa.me/${SUPPORT_WHATSAPP}" target="_blank" rel="noopener">${icon('i-chat', 'i i-sm')}<span>${t('fb.direct')}</span><b class="num">${SUPPORT_DISPLAY}</b></a>
+      </section>
       <section class="card">
         <div class="card-head"><h2>${t('set.categories')}</h2><button class="btn btn-sm" data-action="cat-add">${icon('i-plus', 'i i-sm')}${t('act.new')}</button></div>
         <p class="label" style="margin:4px 4px 6px">${t('filter.expenses')}</p><div class="cat-grid-admin">${cats('expense')}</div>
         <p class="label" style="margin:16px 4px 6px">${t('type.income')}</p><div class="cat-grid-admin">${cats('income')}</div>
       </section>
       <p class="about">Yaje ${APP_VERSION} · ${t('set.about')}<br>${t('set.shortcuts')}</p>
+      <p class="powered about-powered">${t('powered.by')} <strong>Afayi</strong></p>
     </div></div>`;
   }
 
@@ -1536,6 +1550,61 @@
   }
 
   /* =========================================================
+     Help & feedback (WhatsApp)
+     ========================================================= */
+  const FEEDBACK_TYPES = [
+    { id: 'feature', icon: 'i-sparkle', color: '#818CF8' },
+    { id: 'issue', icon: 'i-bug', color: '#FB7185' },
+    { id: 'personal', icon: 'i-palette', color: '#5EEAD4' },
+    { id: 'question', icon: 'i-help', color: '#FBBF24' },
+  ];
+  const deviceLabel = () => `${isIOS() ? 'iOS' : /android/i.test(navigator.userAgent) ? 'Android' : 'Desktop'} · ${isStandalone() ? 'app' : 'browser'}`;
+
+  /** Compose a message and hand it to WhatsApp. Only the app version, language and device type are attached — never financial data. */
+  async function openFeedback(kind = 'feature') {
+    if (!FEEDBACK_TYPES.some((f) => f.id === kind)) kind = 'feature';
+    let current = kind;
+    const res = await openModal(`<h2>${t('fb.modalTitle')}</h2>
+      <p>${t('fb.modalBody')}</p>
+      <div class="chips fb-kinds" role="radiogroup" aria-label="${esc(t('fb.typeLabel'))}" style="margin-top:14px;flex-wrap:wrap">
+        ${FEEDBACK_TYPES.map((f) => `<button class="chip" type="button" role="radio" data-kind="${f.id}" aria-checked="${f.id === kind}" aria-pressed="${f.id === kind}">${icon(f.icon, 'i i-sm')}${t('fb.' + f.id)}</button>`).join('')}
+      </div>
+      <div class="field" style="margin-top:14px"><label class="label" for="fbMsg">${t('fb.msgLabel')}</label>
+        <textarea class="input textarea" id="fbMsg" rows="5" maxlength="1500" placeholder="${esc(t('fb.ph.' + kind))}" aria-describedby="fbErr fbHelp"></textarea>
+        <p class="help" id="fbHelp">${t('fb.privacy')}</p>
+        <p class="error" id="fbErr" role="alert"></p></div>
+      <div class="actions"><button class="btn" type="button" data-close="cancel">${t('act.cancel')}</button>
+        <button class="btn btn-wa" type="submit" value="ok">${icon('i-chat', 'i i-sm')}${t('fb.send')}</button></div>`, {
+      cls: 'fb-modal',
+      onMount: (f) => {
+        const ta = f.querySelector('#fbMsg');
+        f.addEventListener('click', (e) => {
+          const b = e.target.closest('[data-kind]');
+          if (!b) return;
+          current = b.dataset.kind;
+          $$('[data-kind]', f).forEach((x) => { x.setAttribute('aria-checked', x === b); x.setAttribute('aria-pressed', x === b); });
+          ta.placeholder = t('fb.ph.' + current);
+          ta.focus();
+        });
+        ta.addEventListener('input', () => { f.querySelector('#fbErr').textContent = ''; ta.removeAttribute('aria-invalid'); });
+        if (matchMedia('(pointer: fine)').matches) ta.focus();
+      },
+      onSubmit: (f) => {
+        const ta = f.querySelector('#fbMsg');
+        const msg = ta.value.trim();
+        if (msg.length < 3) { f.querySelector('#fbErr').textContent = t('fb.errEmpty'); ta.setAttribute('aria-invalid', 'true'); ta.focus(); return false; }
+        return msg;
+      },
+    });
+    if (typeof res !== 'string') return;
+    const text = `${t('fb.greeting')}\n*${t('fb.' + current)}* — Yaje\n\n${res}\n\n— Yaje ${APP_VERSION} · ${lang.toUpperCase()} · ${deviceLabel()}`;
+    const url = `https://wa.me/${SUPPORT_WHATSAPP}?text=${encodeURIComponent(text)}`;
+    const win = window.open(url, '_blank', 'noopener');
+    if (!win) location.href = url; // pop-up blocked or standalone app without window support
+    toast(t('fb.opened'));
+  }
+
+  /* =========================================================
      Import / export
      ========================================================= */
   function download(name, content, type) {
@@ -1859,6 +1928,7 @@
     import: () => { const f = $('#importFile'); f.value = ''; f.click(); },
     demo: loadDemo,
     'exit-demo': exitDemo,
+    feedback: (el) => openFeedback(el.dataset.kind || 'feature'),
     erase: async () => {
       if (S.demo) return exitDemo();
       const ok = await confirmBox({ title: t('erase.title'), body: t('erase.body'), ok: t('erase.btn'), danger: true });
